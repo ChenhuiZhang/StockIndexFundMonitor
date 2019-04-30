@@ -1,14 +1,17 @@
 import tushare as ts
 import matplotlib.pyplot as plt
 import datetime
+import sys
 
 id = 'hs300'
 
-#df = ts.get_realtime_quotes(id)
+df = ts.get_realtime_quotes(id)
 
-#print(df[['code', 'name', 'price', 'pre_close']])
+print(df[['code', 'name', 'price', 'pre_close']])
 
 #print(df)
+
+sys.exit(0)
 
 now = datetime.date.today()
 begin = now - datetime.timedelta(days=60)
