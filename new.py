@@ -2,7 +2,17 @@
 import time
 import requests
 import pandas as pd
+import matplotlib.pyplot as plt
 import io
+import matplotlib
+import datetime
+import sys
+
+from pylab import mpl
+mpl.rcParams['font.sans-serif'] = ['Yahei Mono']
+
+from matplotlib.font_manager import FontProperties
+chinese_font = FontProperties(fname='/usr/share/fonts/program/yahei_mono.ttf')
 
 def get_data(url):
     headers = {
@@ -14,17 +24,35 @@ def get_data(url):
         return req.text
     return None
 
-if __name__ == '__main__':
-    url = 'http://quotes.money.163.com/service/chddata.html?code=0000300&start=20190201&end=20190429&fields=TCLOSE;HIGH;LOW;TOPEN;LCLOSE;CHG;PCHG;VOTURNOVER;VATURNOVER'
+def save_csv(code, duration):
+    now = datetime.date.today()
+    begin = now - datetime.timedelta(days=duration)
+
+    csv = "%s_%s.csv" % (code, begin.strftime("%Y%m%d"))
+    url = 'http://quotes.money.163.com/service/chddata.html?code=%s&start=%s&end=%s&fields=TCLOSE;TOPEN;LCLOSE;CHG;PCHG' % (code, begin.strftime("%Y%m%d"), now.strftime("%Y%m%d"))
+    print url
+
     html = get_data(url)
 
-    with io.open("my.csv", 'w', encoding="gb2312") as file:
+    with io.open(csv, 'w', encoding="gb2312") as file:
         file.write(html)
 
-    #print(html)
-    #df = pd.read_csv(url, header=0, encoding='gb2312')
-    df = pd.read_csv("my.csv", header=0, encoding='gb2312')
+    return csv
+
+def plot_csv(csv):
+    df = pd.read_csv(csv, header=0, encoding='gb2312')
+
+    df = df[::-1]
+    df = df.reset_index(drop=True)
     print df.head(5)
 
-    df.plot(x='日期', y=['收盘价'])
+    ax = df.plot(x=u'日期', y=[u'收盘价'])
+    ax.set_xticks(df.index)
+    ax.set_xticklabels(df[u'日期'], rotation=60)
+    plt.show()
+
+if __name__ == '__main__':
+    csv_file = save_csv("0000300", 180)
+
+    plot_csv(csv_file)
     
