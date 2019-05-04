@@ -27,7 +27,7 @@ def save_csv(code, duration):
     csv = "%s_%s.csv" % (code, begin.strftime("%Y%m%d"))
     url = 'http://quotes.money.163.com/service/chddata.html?code=%s&start=%s&end=%s&fields=%s' \
             % (code, begin.strftime("%Y%m%d"), now.strftime("%Y%m%d"), fields)
-    print url
+    print(url)
 
     html = get_data(url)
 
@@ -41,7 +41,7 @@ def plot_csv(csv):
 
     df = df[::-1]
     df = df.reset_index(drop=True)
-    print df.head(5)
+    print(df.head(5))
 
     ax = df.plot(x=u'日期', y=[u'收盘价'])
     ax.set_xticks(df.index)
