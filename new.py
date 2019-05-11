@@ -36,6 +36,17 @@ def save_csv(code, duration):
 
     return csv
 
+def plot_SMA(df):
+    mas = [30, 60, 90, 180]
+    colors = dict(zip(mas, ['r', 'm', 'c', 'g']))
+
+    total = len(df.index)
+
+    for days in filter(lambda x: x < total, mas):
+        avg = df.tail(days).mean()
+        start = 1 - float(days)/total
+        plt.axhline(y=avg, xmin=start, xmax=0.97, color=colors[days], label=str(days) + u'日均线')
+
 def plot_csv(csv):
     df = pd.read_csv(csv, header=0, encoding='gb2312')
 
@@ -43,40 +54,11 @@ def plot_csv(csv):
     df = df.reset_index(drop=True)
     print df.head(5)
 
-    print len(df.index)
-    rows = len(df.index)
-
-    print df.tail(30)
-    print df.tail(30)[u'收盘价']
-    print df.tail(60)[u'收盘价'].mean()
-    avg30 = df.tail(90)[u'收盘价'].mean()
-    #print df.ix[-30:, u'收盘价']
-    #print df.ix[-30:, u'收盘价'].mean()
-    #avg30 = df.ix[-30:, u'收盘价'].mean()
-
     ax = df.plot(x=u'日期', y=[u'收盘价'])
     ax.set_xticks(df.index)
     ax.set_xticklabels(df[u'日期'], rotation=60)
-    #df.plot.line(x=u'日期', avg30)
 
-    s = float(30)/rows
-    print s
-    if rows > 30:
-        avg30 = df.tail(30)[u'收盘价'].mean()
-        start = 1 - float(30)/rows
-        plt.axhline(y=avg30, xmin=start, xmax=1, color='r', linestyle='-', label=u'30日均线')
-    if rows > 60:
-        avg60 = df.tail(60)[u'收盘价'].mean()
-        start = 1 - float(60)/rows
-        plt.axhline(y=avg60, xmin=start, xmax=1, color='m', linestyle='-', label=u'60日均线')
-    if rows > 90:
-        avg90 = df.tail(90)[u'收盘价'].mean()
-        start = 1 - float(90)/rows
-        plt.axhline(y=avg90, xmin=start, xmax=1, color='c', linestyle='-', label=u'90日均线')
-    if rows > 180:
-        avg180 = df.tail(180)[u'收盘价'].mean()
-        start = 1 - float(180)/rows
-        plt.axhline(y=avg180, xmin=start, xmax=1, color='g', linestyle='-', label=u'180日均线')
+    plot_SMA(df[u'收盘价'])
 
     plt.legend()
 
@@ -86,7 +68,7 @@ if __name__ == '__main__':
     #csv_file = save_csv("0000016", 180)
     #plot_csv(csv_file)
 
-    csv_file = save_csv("0000300", 300)
+    csv_file = save_csv("0000300", 150)
     plot_csv(csv_file)
     #plot_csv("0000300_20181110_180.csv")
 
