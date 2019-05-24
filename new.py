@@ -65,7 +65,7 @@ def plot_csv(csv):
 
     plt.show()
 
-def xxxx(name):
+def xxxx(name, csv):
     url = "http://hq.sinajs.cn/list=%s" % name
 
     html = get_data(url)
@@ -89,14 +89,18 @@ def xxxx(name):
     else:
         print "Nothing"
 
-    
+    df = pd.read_csv(csv, header=0, encoding='gb2312')
+    print len(df.index)
+    print df[u'收盘价'].head(30).mean()
+    print df[u'收盘价'].head(60).mean()
+    print df[u'收盘价'].head(180).mean()
 
 if __name__ == '__main__':
     #csv_file = save_csv("0000016", 180)
     #plot_csv(csv_file)
 
-    #csv_file = save_csv("0000300", 30)
+    csv_file = save_csv("0000300", 360)
     #plot_csv(csv_file)
     #plot_csv("0000300_20181110_180.csv")
 
-    xxxx("s_sh000300")
+    xxxx("s_sh000300", csv_file)
